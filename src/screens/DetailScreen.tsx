@@ -59,7 +59,6 @@ const DetailScreen = ({ route, navigation }: Props) => {
                     />
                </TouchableOpacity>
 
-
           </ScrollView >
 
      );

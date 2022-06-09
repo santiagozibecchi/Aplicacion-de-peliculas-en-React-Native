@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { View, ActivityIndicator, Dimensions, FlatList, Text, ScrollView } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
+
+import ImageColors from 'react-native-image-colors';
 
 import useMovies from '../hooks/useMovies';
 import MoviePoster from '../components/MoviePoster';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import HorizontalSlider from '../components/HorizontalSlider';
+import GradientBackground from '../components/GradientBackground';
+import { getImageColors } from '../helpers/getColors';
+import { GradientContext } from '../context/GradientContext';
 
 const { width: windownWidth } = Dimensions.get('window');
 
@@ -13,6 +18,28 @@ const HomeScreen = () => {
 
      const { isLoading, nowPlaying, popular, topRated, upcoming } = useMovies();
      const { top } = useSafeAreaInsets();
+     const { setMainColors } = useContext(GradientContext);
+
+     const getPosterColors = async (index: number) => {
+
+          const movie = nowPlaying[index];
+          const uri = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+
+          const [primary = 'grey', secondary = 'orange'] = await getImageColors(uri);
+
+          setMainColors({
+               primary,
+               secondary,
+          });
+     };
+
+     useEffect(() => {
+          // si si, significa que ya tenemos una pelicula
+          if (nowPlaying.length > 0) {
+               getPosterColors(0);
+          }
+     }, [nowPlaying]);
+
 
      if (isLoading) {
           return (
@@ -28,34 +55,36 @@ const HomeScreen = () => {
 
      return (
 
-          <ScrollView>
+          <GradientBackground>
 
-               <View style={{
-                    marginTop: top + 10,
-                    // backgroundColor: 'red',
-               }}>
+               <ScrollView>
 
-                    {/* CAROSEL PRINCIPAL */}
-                    <View style={{ /* backgroundColor: 'red' */ height: 340 }}>
-                         <Carousel
-                              data={nowPlaying}
-                              renderItem={({ item }: any) => <MoviePoster movie={item} />}
-                              sliderWidth={windownWidth}
-                              itemWidth={230}
-                              inactiveSlideOpacity={0.9}
-                         />
-                    </View>
+                    <View style={{
+                         marginTop: top + 10,
+                         // backgroundColor: 'red',
+                    }}>
 
-                    {/* PELICULAS POPULARES */}
-                    <HorizontalSlider title={"Peliculas populares"} movies={popular} />
-                    <HorizontalSlider title={"Peliculas mas puntuadas"} movies={topRated} />
-                    <HorizontalSlider title={"Peliculas que se vienen"} movies={upcoming} />
+                         {/* CAROSEL PRINCIPAL */}
+                         <View style={{ /* backgroundColor: 'red' */ height: 340 }}>
+                              <Carousel
+                                   data={nowPlaying}
+                                   renderItem={({ item }: any) => <MoviePoster movie={item} />}
+                                   sliderWidth={windownWidth}
+                                   itemWidth={230}
+                                   inactiveSlideOpacity={0.9}
+                                   onSnapToItem={index => getPosterColors(index)}
+                              />
+                         </View>
 
+                         {/* PELICULAS POPULARES */}
+                         <HorizontalSlider title={"Peliculas populares"} movies={popular} />
+                         <HorizontalSlider title={"Peliculas mas puntuadas"} movies={topRated} />
+                         <HorizontalSlider title={"Peliculas que se vienen"} movies={upcoming} />
 
+                    </View >
+               </ScrollView>
 
-
-               </View >
-          </ScrollView>
+          </GradientBackground>
 
      );
 };

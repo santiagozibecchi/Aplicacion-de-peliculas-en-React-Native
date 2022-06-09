@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
           shadowRadius: 6,
 
           elevation: 2,
-          marginLeft: 15,
+          marginLeft: 4,
           marginHorizontal: 5,
           paddingRight: 15,
      },
