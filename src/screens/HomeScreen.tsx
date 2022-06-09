@@ -26,7 +26,6 @@ const HomeScreen = () => {
           );
      }
 
-
      return (
 
           <ScrollView>
@@ -42,7 +41,7 @@ const HomeScreen = () => {
                               data={nowPlaying}
                               renderItem={({ item }: any) => <MoviePoster movie={item} />}
                               sliderWidth={windownWidth}
-                              itemWidth={220}
+                              itemWidth={230}
                               inactiveSlideOpacity={0.9}
                          />
                     </View>

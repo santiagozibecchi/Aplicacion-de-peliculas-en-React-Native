@@ -1,6 +1,8 @@
 import { View, Image, StyleSheet } from 'react-native';
 import React from 'react';
 import { Movie } from '../interfaces/movieInterface';
+import { CommonActions, useNavigation } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 interface Props {
      movie: Movie,
@@ -8,28 +10,37 @@ interface Props {
      width?: number,
      top?: number,
 }
-
-const MoviePoster = ({ movie, height = 320, width = 220, top = 9}: Props) => {
+// movie es ya una pelicula que se itero del arreglo nowPlaying a partir de item...
+const MoviePoster = ({ movie, height = 320, width = 230, top = 9 }: Props) => {
 
      const uri = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
 
+     const navigation = useNavigation();
+
      return (
 
-          <View style={{
-               width,
-               height,
-               top,
-               marginHorizontal: 5,
-               // backgroundColor: 'red',
-               borderRadius: 18,
-          }}>{/* Este View controla la sombra de la imagen ya que la image no soporta  elevation */}
+          <TouchableOpacity
+               onPress={() => navigation.dispatch(CommonActions.navigate({
+                    name: 'DetailScreen',
+                    params: movie,
+               }))}
+               style={{
+                    width,
+                    height,
+                    top,
+                    // marginHorizontal: 2,
+                    paddingBottom: 20,
+                    paddingHorizontal: 8,
+                    // backgroundColor: 'red',
+                    borderRadius: 18,
+               }}>{/* Este View controla la sombra de la imagen ya que la image no soporta  elevation */}
                <View style={styles.imageContainer}>
                     <Image
                          source={{ uri }}
                          style={styles.image}
                     />
                </View>
-          </View>
+          </TouchableOpacity>
      );
 };
 
@@ -49,8 +60,8 @@ const styles = StyleSheet.create({
                width: 5,
                height: 5,
           },
-          shadowOpacity: 0.3,
+          shadowOpacity: 0.8,
           shadowRadius: 6,
-          elevation: 10,
+          elevation: 7,
      },
 });
